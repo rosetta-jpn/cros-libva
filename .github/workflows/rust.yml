@@ -34,9 +34,11 @@ jobs:
         make && \
         make install
     - name: Build
-      run: cargo build --all-features --verbose --workspace --tests --examples
+      # Not --all-features because a header for --intel-protected-content-headers is not usually available.
+      run: cargo build --verbose --workspace --tests --examples
     - name: Clippy
-      run: cargo clippy --all-features --workspace --tests --examples
+      # Not --all-features because a header for --intel-protected-content-headers is not usually available.
+      run: cargo clippy --workspace --tests --examples
     - name: Run tests
       run: cargo test --verbose
     - name: Format
