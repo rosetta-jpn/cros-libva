@@ -15,6 +15,7 @@ use bindgen_gen::vaapi_gen_builder;
 /// files to use to generate the bindings.
 const CROS_LIBVA_H_PATH_ENV: &str = "CROS_LIBVA_H_PATH";
 const CROS_LIBVA_LIB_PATH_ENV: &str = "CROS_LIBVA_LIB_PATH";
+const CROS_LIBVA_PROTECTED_CONTENT_H_PATH_ENV: &str = "CROS_LIBVA_PROTECTED_CONTENT_H_PATH";
 
 /// Wrapper file to use as input of bindgen.
 const WRAPPER_PATH: &str = "libva-wrapper.h";
@@ -129,6 +130,17 @@ fn main() {
     if !va_h_path.is_empty() {
         bindings_builder = bindings_builder.clang_arg(format!("-I{}", va_h_path));
     }
+
+    if std::env::var("CARGO_FEATURE_INTEL_PROTECTED_CONTENT_HEADERS").is_ok() {
+        println!("cargo:warning=Building with intel protected content headers!");
+        bindings_builder = bindings_builder.clang_arg("-DINTEL_PROTECTED_CONTENT_HEADERS");
+        let va_p_h_path_env = env::var(CROS_LIBVA_PROTECTED_CONTENT_H_PATH_ENV);
+        if va_p_h_path_env.is_ok() {
+            let va_p_h_path = va_p_h_path_env.unwrap();
+            bindings_builder = bindings_builder.clang_arg(format!("-I{}", va_p_h_path));
+        }
+    }
+
     let bindings = bindings_builder
         .generate()
         .expect("unable to generate bindings");

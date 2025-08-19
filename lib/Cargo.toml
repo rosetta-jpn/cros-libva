@@ -9,6 +9,9 @@ edition = "2021"
 
 readme.workspace = true
 
+[features]
+intel-protected-content-headers = []
+
 [dependencies]
 thiserror = "1"
 bitflags = "2.5"

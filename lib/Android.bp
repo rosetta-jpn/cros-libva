@@ -9,6 +9,22 @@ package {
     default_applicable_licenses: ["external_rust_cros-libva_license"],
 }
 
+soong_config_module_type_import {
+    from: "system/cros-codecs/Android.bp",
+    module_types: [
+        "rust_defaults_cros_codecs_protected_content",
+    ],
+}
+
+rust_defaults_cros_codecs_protected_content {
+    name: "cros_libva_protected_content_rust_library_defaults",
+    soong_config_variables: {
+        intel_protected_content: {
+            features: ["intel-protected-content-headers"],
+        },
+    },
+}
+
 rust_library {
     name: "libcros_libva",
     crate_name: "cros_libva",
@@ -16,6 +32,7 @@ rust_library {
     cargo_pkg_version: "0.0.8",
     crate_root: "src/lib.rs",
     edition: "2021",
+    defaults: ["cros_libva_protected_content_rust_library_defaults"],
     rustlibs: [
         "libbitflags",
         "liblog_rust",

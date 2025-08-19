@@ -6,6 +6,25 @@ package {
     default_applicable_licenses: ["external_rust_cros-libva_license"],
 }
 
+soong_config_module_type_import {
+    from: "system/cros-codecs/Android.bp",
+    module_types: [
+        "rust_defaults_cros_codecs_protected_content",
+    ],
+}
+
+rust_defaults_cros_codecs_protected_content {
+    name: "cros_libva_protected_content_rust_bindgen_defaults",
+    soong_config_variables: {
+        intel_protected_content: {
+            header_libs: [
+                "//vendor/intel/widevine/oemcrypto:liboemcrypto_intel_headers",
+            ],
+            cflags: ["-DINTEL_PROTECTED_CONTENT_HEADERS"],
+        },
+    },
+}
+
 rust_binary_host {
     name: "cros_libva_bindgen_build",
     srcs: ["build.rs"],
@@ -31,8 +50,9 @@ rust_bindgen {
     custom_bindgen: "cros_libva_bindgen_build",
     wrapper_src: "android_wrapper.h",
     source_stem: "bindings",
-    cflags: ["-I external/rust/crates/cros-libva/lib"],
-    visibility: ["//external/rust/crates/cros-libva/lib"],
+    cflags: ["-I external/rust/cros-libva/lib"],
+    visibility: ["//external/rust/cros-libva/lib"],
+    defaults: ["cros_libva_protected_content_rust_bindgen_defaults"],
 
     vendor: true,
     enabled: false,
